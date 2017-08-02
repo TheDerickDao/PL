@@ -1,0 +1,99 @@
+basic program	:	declaration_unit
+				|	implementation_unit
+				
+declaration_unit	:	'DECLARATION' 'OF' ident various_declarations
+
+various_declarations	:	CONST constant_declaration
+						|	VAR variable_declaration
+						|	type_declaration
+						|	procedure_interface
+						|	function_interface
+						|	'DECLARATION' 'END'
+						|	CONST constant_declaration various_declarations
+						|	VAR variable_declaration various_declarations
+						|	type_declaration various_declarations
+						|	procedure_interface various_declarations
+						|	function_interface various_declarations
+						
+procedure_interface	:	'PROCEDURE' ident
+					|	'PROCEDURE' ident formal_parameters
+					
+function_interface	:	'FUNCTION' ident
+					|	'FUNCTION' ident formal_parameters
+
+type_declaration	:	'TYPE' ident ':' type ';'
+
+formal_parameters	:	'(' ident ')'
+					|	'(' ident ';' ??? ')'
+					
+constant_declaration	:	ident '=' number ';'
+						|	ident '=' number ',' constant_declaration ';'
+						
+variable_declaration	:	ident ':' ident ';'
+						|	ident ':' ident ',' variable_declaration ';'
+						
+type	:	basic_type
+		|	array_type
+
+basic_type	:	ident
+			|	enumerated_type
+			|	range_type
+			
+enumerated_type	:	'{' ident '}'
+				|	'{' ident ',' ??? '}'
+				
+range_type	:	'[' range ']'
+
+array_type	:	'ARRAY' ident '[' range ']' 'OF' type
+
+range	:	number '..' number
+
+implementation_unit	:	'IMPLEMENTATION' 'OF' ident block '.'
+
+block	:	specification_part implementation_part
+
+specification_part	:	'CONST' constant_declaration
+					|	'VAR' variable_declaration
+					|	procedure_declaration
+					|	function_declaration
+					;
+					
+procedure_declaration	:	'PROCEDURE' ident ':' block ';'
+						
+function_declaration	:	'FUNCTION' ident ':' block ';'
+
+implementation_part	:	compound_statement
+
+statement	:	assignment
+			|	procedure_call
+			|	if_statement
+			|	while_statement
+			|	do_statement
+			|	for_statement
+			|	compound_statement
+			
+assignment	:	ident ':=' expression
+
+procedure_call	:	'CALL' ident
+
+if_statement	:	'IF' expression 'THEN' compound_statement 'END IF'
+
+while_statement	:	'WHILE' expression 'DO' compound_statement 'END WHILE'
+
+do_statement	:	'DO' compound_statement 'WHILE' expression 'END DO'
+
+for_statement	:	'FOR EACH' ident 'IN' ident 'DO' compound_statement 'END FOR'
+
+compound_statement	:	'BEGIN' statement 'END'
+					|	'BEGIN' statement ';' statement 'END'
+					
+expression	:	term
+			|	term '+' expression
+			|	term '-' expression
+
+term	:	id_num
+		|	id_num '*' term
+		|	id_num '/' term
+
+id_num	:	ident
+		|	number

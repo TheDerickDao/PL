@@ -1,0 +1,1417 @@
+   0  $accept : basic_program $end
+
+   1  basic_program : declaration_unit
+   2                | implementation_unit
+
+   3  declaration_unit : T_DECLARATION T_OF T_IDENT o_const_declaration o_var_declaration o_type_declaration o_procedure_interface o_function_interface T_DECLARATION T_END
+
+   4  o_const_declaration :
+   5                      | T_CONST constant_declaration
+
+   6  o_var_declaration :
+   7                    | T_VAR variable_declaration
+
+   8  o_type_declaration :
+   9                     | type_declaration
+
+  10  o_procedure_interface :
+  11                        | procedure_interface
+
+  12  o_function_interface :
+  13                       | function_interface
+
+  14  procedure_interface : T_PROCEDURE T_IDENT o_formal_parameters
+
+  15  function_interface : T_FUNCTION T_IDENT o_formal_parameters
+
+  16  type_declaration : T_TYPE T_IDENT T_COLON type T_SEMICOLON
+
+  17  o_formal_parameters :
+  18                      | formal_parameters
+
+  19  formal_parameters : T_BRACKETL o_parameters T_BRACKETR
+
+  20  o_parameters : T_IDENT
+  21               | o_parameters T_SEMICOLON T_IDENT
+
+  22  constant_declaration : comma_const_declarations T_SEMICOLON
+
+  23  comma_const_declarations : const_var_declaration
+  24                           | comma_const_declarations T_COMMA const_var_declaration
+
+  25  const_var_declaration : T_IDENT T_EQUALS T_NUMBER
+
+  26  variable_declaration : comma_variable_declaration T_SEMICOLON
+
+  27  comma_variable_declaration : var_declaration
+  28                             | comma_variable_declaration T_COMMA var_declaration
+
+  29  var_declaration : T_IDENT T_COLON T_IDENT
+
+  30  type : basic_type
+  31       | array_type
+
+  32  basic_type : T_IDENT
+  33             | enumerated_type
+  34             | range_type
+
+  35  enumerated_type : T_CURLYL comma_ident T_CURLYR
+
+  36  comma_ident : T_IDENT
+  37              | comma_ident T_COMMA T_IDENT
+
+  38  range_type : T_SQUAREL range T_SQUARER
+
+  39  array_type : T_ARRAY T_IDENT T_SQUAREL range T_SQUARER T_OF type
+
+  40  range : T_NUMBER T_TO T_NUMBER
+
+  41  implementation_unit : T_IMPLEMENTATION T_OF T_IDENT block T_PERIOD
+
+  42  block : specification_part implementation_part
+
+  43  specification_part :
+  44                     | T_CONST constant_declaration
+  45                     | T_VAR variable_declaration
+  46                     | procedure_declaration
+  47                     | function_declaration
+
+  48  procedure_declaration : T_PROCEDURE T_IDENT T_SEMICOLON block T_SEMICOLON
+
+  49  function_declaration : T_FUNCTION T_IDENT T_COLON block T_SEMICOLON
+
+  50  implementation_part : compound_statement
+
+  51  statement : assignment
+  52            | procedure_call
+  53            | if_statement
+  54            | while_statement
+  55            | do_statement
+  56            | for_statement
+  57            | compound_statement
+
+  58  assignment : T_IDENT T_ASSIGN expression
+
+  59  procedure_call : T_CALL T_IDENT
+
+  60  if_statement : T_IF expression T_THEN compound_statement T_END T_IF
+
+  61  while_statement : T_WHILE expression T_DO compound_statement T_END T_WHILE
+
+  62  do_statement : T_DO compound_statement T_WHILE expression T_END T_DO
+
+  63  for_statement : T_FOR T_EACH T_IDENT T_IN T_IDENT T_DO compound_statement T_END T_FOR
+
+  64  compound_statement : T_BEGIN compound_sequence T_END
+
+  65  compound_sequence : statement
+  66                    | compound_sequence T_SEMICOLON statement
+
+  67  expression : a_s_term
+
+  68  a_s_term : term
+  69           | a_s_term T_PLUS term
+  70           | a_s_term T_MINUS term
+
+  71  term : m_d_idnum
+
+  72  m_d_idnum : id_num
+  73            | m_d_idnum T_MULTIPLY id_num
+  74            | m_d_idnum T_DIVIDE id_num
+
+  75  id_num : T_IDENT
+  76         | T_NUMBER
+
+state 0
+	$accept : . basic_program $end  (0)
+
+	T_DECLARATION  shift 1
+	T_IMPLEMENTATION  shift 2
+	.  error
+
+	basic_program  goto 3
+	declaration_unit  goto 4
+	implementation_unit  goto 5
+
+
+state 1
+	declaration_unit : T_DECLARATION . T_OF T_IDENT o_const_declaration o_var_declaration o_type_declaration o_procedure_interface o_function_interface T_DECLARATION T_END  (3)
+
+	T_OF  shift 6
+	.  error
+
+
+state 2
+	implementation_unit : T_IMPLEMENTATION . T_OF T_IDENT block T_PERIOD  (41)
+
+	T_OF  shift 7
+	.  error
+
+
+state 3
+	$accept : basic_program . $end  (0)
+
+	$end  accept
+
+
+state 4
+	basic_program : declaration_unit .  (1)
+
+	.  reduce 1
+
+
+state 5
+	basic_program : implementation_unit .  (2)
+
+	.  reduce 2
+
+
+state 6
+	declaration_unit : T_DECLARATION T_OF . T_IDENT o_const_declaration o_var_declaration o_type_declaration o_procedure_interface o_function_interface T_DECLARATION T_END  (3)
+
+	T_IDENT  shift 8
+	.  error
+
+
+state 7
+	implementation_unit : T_IMPLEMENTATION T_OF . T_IDENT block T_PERIOD  (41)
+
+	T_IDENT  shift 9
+	.  error
+
+
+state 8
+	declaration_unit : T_DECLARATION T_OF T_IDENT . o_const_declaration o_var_declaration o_type_declaration o_procedure_interface o_function_interface T_DECLARATION T_END  (3)
+	o_const_declaration : .  (4)
+
+	T_CONST  shift 10
+	T_DECLARATION  reduce 4
+	T_FUNCTION  reduce 4
+	T_PROCEDURE  reduce 4
+	T_TYPE  reduce 4
+	T_VAR  reduce 4
+
+	o_const_declaration  goto 11
+
+
+state 9
+	implementation_unit : T_IMPLEMENTATION T_OF T_IDENT . block T_PERIOD  (41)
+	specification_part : .  (43)
+
+	T_CONST  shift 12
+	T_FUNCTION  shift 13
+	T_PROCEDURE  shift 14
+	T_VAR  shift 15
+	T_BEGIN  reduce 43
+
+	block  goto 16
+	specification_part  goto 17
+	procedure_declaration  goto 18
+	function_declaration  goto 19
+
+
+state 10
+	o_const_declaration : T_CONST . constant_declaration  (5)
+
+	T_IDENT  shift 20
+	.  error
+
+	constant_declaration  goto 21
+	comma_const_declarations  goto 22
+	const_var_declaration  goto 23
+
+
+state 11
+	declaration_unit : T_DECLARATION T_OF T_IDENT o_const_declaration . o_var_declaration o_type_declaration o_procedure_interface o_function_interface T_DECLARATION T_END  (3)
+	o_var_declaration : .  (6)
+
+	T_VAR  shift 24
+	T_DECLARATION  reduce 6
+	T_FUNCTION  reduce 6
+	T_PROCEDURE  reduce 6
+	T_TYPE  reduce 6
+
+	o_var_declaration  goto 25
+
+
+state 12
+	specification_part : T_CONST . constant_declaration  (44)
+
+	T_IDENT  shift 20
+	.  error
+
+	constant_declaration  goto 26
+	comma_const_declarations  goto 22
+	const_var_declaration  goto 23
+
+
+state 13
+	function_declaration : T_FUNCTION . T_IDENT T_COLON block T_SEMICOLON  (49)
+
+	T_IDENT  shift 27
+	.  error
+
+
+state 14
+	procedure_declaration : T_PROCEDURE . T_IDENT T_SEMICOLON block T_SEMICOLON  (48)
+
+	T_IDENT  shift 28
+	.  error
+
+
+state 15
+	specification_part : T_VAR . variable_declaration  (45)
+
+	T_IDENT  shift 29
+	.  error
+
+	variable_declaration  goto 30
+	comma_variable_declaration  goto 31
+	var_declaration  goto 32
+
+
+state 16
+	implementation_unit : T_IMPLEMENTATION T_OF T_IDENT block . T_PERIOD  (41)
+
+	T_PERIOD  shift 33
+	.  error
+
+
+state 17
+	block : specification_part . implementation_part  (42)
+
+	T_BEGIN  shift 34
+	.  error
+
+	implementation_part  goto 35
+	compound_statement  goto 36
+
+
+state 18
+	specification_part : procedure_declaration .  (46)
+
+	.  reduce 46
+
+
+state 19
+	specification_part : function_declaration .  (47)
+
+	.  reduce 47
+
+
+state 20
+	const_var_declaration : T_IDENT . T_EQUALS T_NUMBER  (25)
+
+	T_EQUALS  shift 37
+	.  error
+
+
+state 21
+	o_const_declaration : T_CONST constant_declaration .  (5)
+
+	.  reduce 5
+
+
+state 22
+	constant_declaration : comma_const_declarations . T_SEMICOLON  (22)
+	comma_const_declarations : comma_const_declarations . T_COMMA const_var_declaration  (24)
+
+	T_COMMA  shift 38
+	T_SEMICOLON  shift 39
+	.  error
+
+
+state 23
+	comma_const_declarations : const_var_declaration .  (23)
+
+	.  reduce 23
+
+
+state 24
+	o_var_declaration : T_VAR . variable_declaration  (7)
+
+	T_IDENT  shift 29
+	.  error
+
+	variable_declaration  goto 40
+	comma_variable_declaration  goto 31
+	var_declaration  goto 32
+
+
+state 25
+	declaration_unit : T_DECLARATION T_OF T_IDENT o_const_declaration o_var_declaration . o_type_declaration o_procedure_interface o_function_interface T_DECLARATION T_END  (3)
+	o_type_declaration : .  (8)
+
+	T_TYPE  shift 41
+	T_DECLARATION  reduce 8
+	T_FUNCTION  reduce 8
+	T_PROCEDURE  reduce 8
+
+	o_type_declaration  goto 42
+	type_declaration  goto 43
+
+
+state 26
+	specification_part : T_CONST constant_declaration .  (44)
+
+	.  reduce 44
+
+
+state 27
+	function_declaration : T_FUNCTION T_IDENT . T_COLON block T_SEMICOLON  (49)
+
+	T_COLON  shift 44
+	.  error
+
+
+state 28
+	procedure_declaration : T_PROCEDURE T_IDENT . T_SEMICOLON block T_SEMICOLON  (48)
+
+	T_SEMICOLON  shift 45
+	.  error
+
+
+state 29
+	var_declaration : T_IDENT . T_COLON T_IDENT  (29)
+
+	T_COLON  shift 46
+	.  error
+
+
+state 30
+	specification_part : T_VAR variable_declaration .  (45)
+
+	.  reduce 45
+
+
+state 31
+	variable_declaration : comma_variable_declaration . T_SEMICOLON  (26)
+	comma_variable_declaration : comma_variable_declaration . T_COMMA var_declaration  (28)
+
+	T_COMMA  shift 47
+	T_SEMICOLON  shift 48
+	.  error
+
+
+state 32
+	comma_variable_declaration : var_declaration .  (27)
+
+	.  reduce 27
+
+
+state 33
+	implementation_unit : T_IMPLEMENTATION T_OF T_IDENT block T_PERIOD .  (41)
+
+	.  reduce 41
+
+
+state 34
+	compound_statement : T_BEGIN . compound_sequence T_END  (64)
+
+	T_BEGIN  shift 34
+	T_CALL  shift 49
+	T_DO  shift 50
+	T_FOR  shift 51
+	T_IF  shift 52
+	T_WHILE  shift 53
+	T_IDENT  shift 54
+	.  error
+
+	compound_statement  goto 55
+	statement  goto 56
+	assignment  goto 57
+	procedure_call  goto 58
+	if_statement  goto 59
+	while_statement  goto 60
+	do_statement  goto 61
+	for_statement  goto 62
+	compound_sequence  goto 63
+
+
+state 35
+	block : specification_part implementation_part .  (42)
+
+	.  reduce 42
+
+
+state 36
+	implementation_part : compound_statement .  (50)
+
+	.  reduce 50
+
+
+state 37
+	const_var_declaration : T_IDENT T_EQUALS . T_NUMBER  (25)
+
+	T_NUMBER  shift 64
+	.  error
+
+
+state 38
+	comma_const_declarations : comma_const_declarations T_COMMA . const_var_declaration  (24)
+
+	T_IDENT  shift 20
+	.  error
+
+	const_var_declaration  goto 65
+
+
+state 39
+	constant_declaration : comma_const_declarations T_SEMICOLON .  (22)
+
+	.  reduce 22
+
+
+state 40
+	o_var_declaration : T_VAR variable_declaration .  (7)
+
+	.  reduce 7
+
+
+state 41
+	type_declaration : T_TYPE . T_IDENT T_COLON type T_SEMICOLON  (16)
+
+	T_IDENT  shift 66
+	.  error
+
+
+state 42
+	declaration_unit : T_DECLARATION T_OF T_IDENT o_const_declaration o_var_declaration o_type_declaration . o_procedure_interface o_function_interface T_DECLARATION T_END  (3)
+	o_procedure_interface : .  (10)
+
+	T_PROCEDURE  shift 67
+	T_DECLARATION  reduce 10
+	T_FUNCTION  reduce 10
+
+	o_procedure_interface  goto 68
+	procedure_interface  goto 69
+
+
+state 43
+	o_type_declaration : type_declaration .  (9)
+
+	.  reduce 9
+
+
+state 44
+	function_declaration : T_FUNCTION T_IDENT T_COLON . block T_SEMICOLON  (49)
+	specification_part : .  (43)
+
+	T_CONST  shift 12
+	T_FUNCTION  shift 13
+	T_PROCEDURE  shift 14
+	T_VAR  shift 15
+	T_BEGIN  reduce 43
+
+	block  goto 70
+	specification_part  goto 17
+	procedure_declaration  goto 18
+	function_declaration  goto 19
+
+
+state 45
+	procedure_declaration : T_PROCEDURE T_IDENT T_SEMICOLON . block T_SEMICOLON  (48)
+	specification_part : .  (43)
+
+	T_CONST  shift 12
+	T_FUNCTION  shift 13
+	T_PROCEDURE  shift 14
+	T_VAR  shift 15
+	T_BEGIN  reduce 43
+
+	block  goto 71
+	specification_part  goto 17
+	procedure_declaration  goto 18
+	function_declaration  goto 19
+
+
+state 46
+	var_declaration : T_IDENT T_COLON . T_IDENT  (29)
+
+	T_IDENT  shift 72
+	.  error
+
+
+state 47
+	comma_variable_declaration : comma_variable_declaration T_COMMA . var_declaration  (28)
+
+	T_IDENT  shift 29
+	.  error
+
+	var_declaration  goto 73
+
+
+state 48
+	variable_declaration : comma_variable_declaration T_SEMICOLON .  (26)
+
+	.  reduce 26
+
+
+state 49
+	procedure_call : T_CALL . T_IDENT  (59)
+
+	T_IDENT  shift 74
+	.  error
+
+
+state 50
+	do_statement : T_DO . compound_statement T_WHILE expression T_END T_DO  (62)
+
+	T_BEGIN  shift 34
+	.  error
+
+	compound_statement  goto 75
+
+
+state 51
+	for_statement : T_FOR . T_EACH T_IDENT T_IN T_IDENT T_DO compound_statement T_END T_FOR  (63)
+
+	T_EACH  shift 76
+	.  error
+
+
+state 52
+	if_statement : T_IF . expression T_THEN compound_statement T_END T_IF  (60)
+
+	T_NUMBER  shift 77
+	T_IDENT  shift 78
+	.  error
+
+	expression  goto 79
+	a_s_term  goto 80
+	term  goto 81
+	m_d_idnum  goto 82
+	id_num  goto 83
+
+
+state 53
+	while_statement : T_WHILE . expression T_DO compound_statement T_END T_WHILE  (61)
+
+	T_NUMBER  shift 77
+	T_IDENT  shift 78
+	.  error
+
+	expression  goto 84
+	a_s_term  goto 80
+	term  goto 81
+	m_d_idnum  goto 82
+	id_num  goto 83
+
+
+state 54
+	assignment : T_IDENT . T_ASSIGN expression  (58)
+
+	T_ASSIGN  shift 85
+	.  error
+
+
+state 55
+	statement : compound_statement .  (57)
+
+	.  reduce 57
+
+
+state 56
+	compound_sequence : statement .  (65)
+
+	.  reduce 65
+
+
+state 57
+	statement : assignment .  (51)
+
+	.  reduce 51
+
+
+state 58
+	statement : procedure_call .  (52)
+
+	.  reduce 52
+
+
+state 59
+	statement : if_statement .  (53)
+
+	.  reduce 53
+
+
+state 60
+	statement : while_statement .  (54)
+
+	.  reduce 54
+
+
+state 61
+	statement : do_statement .  (55)
+
+	.  reduce 55
+
+
+state 62
+	statement : for_statement .  (56)
+
+	.  reduce 56
+
+
+state 63
+	compound_statement : T_BEGIN compound_sequence . T_END  (64)
+	compound_sequence : compound_sequence . T_SEMICOLON statement  (66)
+
+	T_END  shift 86
+	T_SEMICOLON  shift 87
+	.  error
+
+
+state 64
+	const_var_declaration : T_IDENT T_EQUALS T_NUMBER .  (25)
+
+	.  reduce 25
+
+
+state 65
+	comma_const_declarations : comma_const_declarations T_COMMA const_var_declaration .  (24)
+
+	.  reduce 24
+
+
+state 66
+	type_declaration : T_TYPE T_IDENT . T_COLON type T_SEMICOLON  (16)
+
+	T_COLON  shift 88
+	.  error
+
+
+state 67
+	procedure_interface : T_PROCEDURE . T_IDENT o_formal_parameters  (14)
+
+	T_IDENT  shift 89
+	.  error
+
+
+state 68
+	declaration_unit : T_DECLARATION T_OF T_IDENT o_const_declaration o_var_declaration o_type_declaration o_procedure_interface . o_function_interface T_DECLARATION T_END  (3)
+	o_function_interface : .  (12)
+
+	T_FUNCTION  shift 90
+	T_DECLARATION  reduce 12
+
+	o_function_interface  goto 91
+	function_interface  goto 92
+
+
+state 69
+	o_procedure_interface : procedure_interface .  (11)
+
+	.  reduce 11
+
+
+state 70
+	function_declaration : T_FUNCTION T_IDENT T_COLON block . T_SEMICOLON  (49)
+
+	T_SEMICOLON  shift 93
+	.  error
+
+
+state 71
+	procedure_declaration : T_PROCEDURE T_IDENT T_SEMICOLON block . T_SEMICOLON  (48)
+
+	T_SEMICOLON  shift 94
+	.  error
+
+
+state 72
+	var_declaration : T_IDENT T_COLON T_IDENT .  (29)
+
+	.  reduce 29
+
+
+state 73
+	comma_variable_declaration : comma_variable_declaration T_COMMA var_declaration .  (28)
+
+	.  reduce 28
+
+
+state 74
+	procedure_call : T_CALL T_IDENT .  (59)
+
+	.  reduce 59
+
+
+state 75
+	do_statement : T_DO compound_statement . T_WHILE expression T_END T_DO  (62)
+
+	T_WHILE  shift 95
+	.  error
+
+
+state 76
+	for_statement : T_FOR T_EACH . T_IDENT T_IN T_IDENT T_DO compound_statement T_END T_FOR  (63)
+
+	T_IDENT  shift 96
+	.  error
+
+
+state 77
+	id_num : T_NUMBER .  (76)
+
+	.  reduce 76
+
+
+state 78
+	id_num : T_IDENT .  (75)
+
+	.  reduce 75
+
+
+state 79
+	if_statement : T_IF expression . T_THEN compound_statement T_END T_IF  (60)
+
+	T_THEN  shift 97
+	.  error
+
+
+state 80
+	expression : a_s_term .  (67)
+	a_s_term : a_s_term . T_PLUS term  (69)
+	a_s_term : a_s_term . T_MINUS term  (70)
+
+	T_MINUS  shift 98
+	T_PLUS  shift 99
+	T_DO  reduce 67
+	T_END  reduce 67
+	T_THEN  reduce 67
+	T_SEMICOLON  reduce 67
+
+
+state 81
+	a_s_term : term .  (68)
+
+	.  reduce 68
+
+
+state 82
+	term : m_d_idnum .  (71)
+	m_d_idnum : m_d_idnum . T_MULTIPLY id_num  (73)
+	m_d_idnum : m_d_idnum . T_DIVIDE id_num  (74)
+
+	T_MULTIPLY  shift 100
+	T_DIVIDE  shift 101
+	T_DO  reduce 71
+	T_END  reduce 71
+	T_THEN  reduce 71
+	T_MINUS  reduce 71
+	T_SEMICOLON  reduce 71
+	T_PLUS  reduce 71
+
+
+state 83
+	m_d_idnum : id_num .  (72)
+
+	.  reduce 72
+
+
+state 84
+	while_statement : T_WHILE expression . T_DO compound_statement T_END T_WHILE  (61)
+
+	T_DO  shift 102
+	.  error
+
+
+state 85
+	assignment : T_IDENT T_ASSIGN . expression  (58)
+
+	T_NUMBER  shift 77
+	T_IDENT  shift 78
+	.  error
+
+	expression  goto 103
+	a_s_term  goto 80
+	term  goto 81
+	m_d_idnum  goto 82
+	id_num  goto 83
+
+
+state 86
+	compound_statement : T_BEGIN compound_sequence T_END .  (64)
+
+	.  reduce 64
+
+
+state 87
+	compound_sequence : compound_sequence T_SEMICOLON . statement  (66)
+
+	T_BEGIN  shift 34
+	T_CALL  shift 49
+	T_DO  shift 50
+	T_FOR  shift 51
+	T_IF  shift 52
+	T_WHILE  shift 53
+	T_IDENT  shift 54
+	.  error
+
+	compound_statement  goto 55
+	statement  goto 104
+	assignment  goto 57
+	procedure_call  goto 58
+	if_statement  goto 59
+	while_statement  goto 60
+	do_statement  goto 61
+	for_statement  goto 62
+
+
+state 88
+	type_declaration : T_TYPE T_IDENT T_COLON . type T_SEMICOLON  (16)
+
+	T_ARRAY  shift 105
+	T_SQUAREL  shift 106
+	T_CURLYL  shift 107
+	T_IDENT  shift 108
+	.  error
+
+	type  goto 109
+	basic_type  goto 110
+	array_type  goto 111
+	enumerated_type  goto 112
+	range_type  goto 113
+
+
+state 89
+	procedure_interface : T_PROCEDURE T_IDENT . o_formal_parameters  (14)
+	o_formal_parameters : .  (17)
+
+	T_BRACKETL  shift 114
+	T_DECLARATION  reduce 17
+	T_FUNCTION  reduce 17
+
+	o_formal_parameters  goto 115
+	formal_parameters  goto 116
+
+
+state 90
+	function_interface : T_FUNCTION . T_IDENT o_formal_parameters  (15)
+
+	T_IDENT  shift 117
+	.  error
+
+
+state 91
+	declaration_unit : T_DECLARATION T_OF T_IDENT o_const_declaration o_var_declaration o_type_declaration o_procedure_interface o_function_interface . T_DECLARATION T_END  (3)
+
+	T_DECLARATION  shift 118
+	.  error
+
+
+state 92
+	o_function_interface : function_interface .  (13)
+
+	.  reduce 13
+
+
+state 93
+	function_declaration : T_FUNCTION T_IDENT T_COLON block T_SEMICOLON .  (49)
+
+	.  reduce 49
+
+
+state 94
+	procedure_declaration : T_PROCEDURE T_IDENT T_SEMICOLON block T_SEMICOLON .  (48)
+
+	.  reduce 48
+
+
+state 95
+	do_statement : T_DO compound_statement T_WHILE . expression T_END T_DO  (62)
+
+	T_NUMBER  shift 77
+	T_IDENT  shift 78
+	.  error
+
+	expression  goto 119
+	a_s_term  goto 80
+	term  goto 81
+	m_d_idnum  goto 82
+	id_num  goto 83
+
+
+state 96
+	for_statement : T_FOR T_EACH T_IDENT . T_IN T_IDENT T_DO compound_statement T_END T_FOR  (63)
+
+	T_IN  shift 120
+	.  error
+
+
+state 97
+	if_statement : T_IF expression T_THEN . compound_statement T_END T_IF  (60)
+
+	T_BEGIN  shift 34
+	.  error
+
+	compound_statement  goto 121
+
+
+state 98
+	a_s_term : a_s_term T_MINUS . term  (70)
+
+	T_NUMBER  shift 77
+	T_IDENT  shift 78
+	.  error
+
+	term  goto 122
+	m_d_idnum  goto 82
+	id_num  goto 83
+
+
+state 99
+	a_s_term : a_s_term T_PLUS . term  (69)
+
+	T_NUMBER  shift 77
+	T_IDENT  shift 78
+	.  error
+
+	term  goto 123
+	m_d_idnum  goto 82
+	id_num  goto 83
+
+
+state 100
+	m_d_idnum : m_d_idnum T_MULTIPLY . id_num  (73)
+
+	T_NUMBER  shift 77
+	T_IDENT  shift 78
+	.  error
+
+	id_num  goto 124
+
+
+state 101
+	m_d_idnum : m_d_idnum T_DIVIDE . id_num  (74)
+
+	T_NUMBER  shift 77
+	T_IDENT  shift 78
+	.  error
+
+	id_num  goto 125
+
+
+state 102
+	while_statement : T_WHILE expression T_DO . compound_statement T_END T_WHILE  (61)
+
+	T_BEGIN  shift 34
+	.  error
+
+	compound_statement  goto 126
+
+
+state 103
+	assignment : T_IDENT T_ASSIGN expression .  (58)
+
+	.  reduce 58
+
+
+state 104
+	compound_sequence : compound_sequence T_SEMICOLON statement .  (66)
+
+	.  reduce 66
+
+
+state 105
+	array_type : T_ARRAY . T_IDENT T_SQUAREL range T_SQUARER T_OF type  (39)
+
+	T_IDENT  shift 127
+	.  error
+
+
+state 106
+	range_type : T_SQUAREL . range T_SQUARER  (38)
+
+	T_NUMBER  shift 128
+	.  error
+
+	range  goto 129
+
+
+state 107
+	enumerated_type : T_CURLYL . comma_ident T_CURLYR  (35)
+
+	T_IDENT  shift 130
+	.  error
+
+	comma_ident  goto 131
+
+
+state 108
+	basic_type : T_IDENT .  (32)
+
+	.  reduce 32
+
+
+state 109
+	type_declaration : T_TYPE T_IDENT T_COLON type . T_SEMICOLON  (16)
+
+	T_SEMICOLON  shift 132
+	.  error
+
+
+state 110
+	type : basic_type .  (30)
+
+	.  reduce 30
+
+
+state 111
+	type : array_type .  (31)
+
+	.  reduce 31
+
+
+state 112
+	basic_type : enumerated_type .  (33)
+
+	.  reduce 33
+
+
+state 113
+	basic_type : range_type .  (34)
+
+	.  reduce 34
+
+
+state 114
+	formal_parameters : T_BRACKETL . o_parameters T_BRACKETR  (19)
+
+	T_IDENT  shift 133
+	.  error
+
+	o_parameters  goto 134
+
+
+state 115
+	procedure_interface : T_PROCEDURE T_IDENT o_formal_parameters .  (14)
+
+	.  reduce 14
+
+
+state 116
+	o_formal_parameters : formal_parameters .  (18)
+
+	.  reduce 18
+
+
+state 117
+	function_interface : T_FUNCTION T_IDENT . o_formal_parameters  (15)
+	o_formal_parameters : .  (17)
+
+	T_BRACKETL  shift 114
+	T_DECLARATION  reduce 17
+
+	o_formal_parameters  goto 135
+	formal_parameters  goto 116
+
+
+state 118
+	declaration_unit : T_DECLARATION T_OF T_IDENT o_const_declaration o_var_declaration o_type_declaration o_procedure_interface o_function_interface T_DECLARATION . T_END  (3)
+
+	T_END  shift 136
+	.  error
+
+
+state 119
+	do_statement : T_DO compound_statement T_WHILE expression . T_END T_DO  (62)
+
+	T_END  shift 137
+	.  error
+
+
+state 120
+	for_statement : T_FOR T_EACH T_IDENT T_IN . T_IDENT T_DO compound_statement T_END T_FOR  (63)
+
+	T_IDENT  shift 138
+	.  error
+
+
+state 121
+	if_statement : T_IF expression T_THEN compound_statement . T_END T_IF  (60)
+
+	T_END  shift 139
+	.  error
+
+
+state 122
+	a_s_term : a_s_term T_MINUS term .  (70)
+
+	.  reduce 70
+
+
+state 123
+	a_s_term : a_s_term T_PLUS term .  (69)
+
+	.  reduce 69
+
+
+state 124
+	m_d_idnum : m_d_idnum T_MULTIPLY id_num .  (73)
+
+	.  reduce 73
+
+
+state 125
+	m_d_idnum : m_d_idnum T_DIVIDE id_num .  (74)
+
+	.  reduce 74
+
+
+state 126
+	while_statement : T_WHILE expression T_DO compound_statement . T_END T_WHILE  (61)
+
+	T_END  shift 140
+	.  error
+
+
+state 127
+	array_type : T_ARRAY T_IDENT . T_SQUAREL range T_SQUARER T_OF type  (39)
+
+	T_SQUAREL  shift 141
+	.  error
+
+
+state 128
+	range : T_NUMBER . T_TO T_NUMBER  (40)
+
+	T_TO  shift 142
+	.  error
+
+
+state 129
+	range_type : T_SQUAREL range . T_SQUARER  (38)
+
+	T_SQUARER  shift 143
+	.  error
+
+
+state 130
+	comma_ident : T_IDENT .  (36)
+
+	.  reduce 36
+
+
+state 131
+	enumerated_type : T_CURLYL comma_ident . T_CURLYR  (35)
+	comma_ident : comma_ident . T_COMMA T_IDENT  (37)
+
+	T_COMMA  shift 144
+	T_CURLYR  shift 145
+	.  error
+
+
+state 132
+	type_declaration : T_TYPE T_IDENT T_COLON type T_SEMICOLON .  (16)
+
+	.  reduce 16
+
+
+state 133
+	o_parameters : T_IDENT .  (20)
+
+	.  reduce 20
+
+
+state 134
+	formal_parameters : T_BRACKETL o_parameters . T_BRACKETR  (19)
+	o_parameters : o_parameters . T_SEMICOLON T_IDENT  (21)
+
+	T_SEMICOLON  shift 146
+	T_BRACKETR  shift 147
+	.  error
+
+
+state 135
+	function_interface : T_FUNCTION T_IDENT o_formal_parameters .  (15)
+
+	.  reduce 15
+
+
+state 136
+	declaration_unit : T_DECLARATION T_OF T_IDENT o_const_declaration o_var_declaration o_type_declaration o_procedure_interface o_function_interface T_DECLARATION T_END .  (3)
+
+	.  reduce 3
+
+
+state 137
+	do_statement : T_DO compound_statement T_WHILE expression T_END . T_DO  (62)
+
+	T_DO  shift 148
+	.  error
+
+
+state 138
+	for_statement : T_FOR T_EACH T_IDENT T_IN T_IDENT . T_DO compound_statement T_END T_FOR  (63)
+
+	T_DO  shift 149
+	.  error
+
+
+state 139
+	if_statement : T_IF expression T_THEN compound_statement T_END . T_IF  (60)
+
+	T_IF  shift 150
+	.  error
+
+
+state 140
+	while_statement : T_WHILE expression T_DO compound_statement T_END . T_WHILE  (61)
+
+	T_WHILE  shift 151
+	.  error
+
+
+state 141
+	array_type : T_ARRAY T_IDENT T_SQUAREL . range T_SQUARER T_OF type  (39)
+
+	T_NUMBER  shift 128
+	.  error
+
+	range  goto 152
+
+
+state 142
+	range : T_NUMBER T_TO . T_NUMBER  (40)
+
+	T_NUMBER  shift 153
+	.  error
+
+
+state 143
+	range_type : T_SQUAREL range T_SQUARER .  (38)
+
+	.  reduce 38
+
+
+state 144
+	comma_ident : comma_ident T_COMMA . T_IDENT  (37)
+
+	T_IDENT  shift 154
+	.  error
+
+
+state 145
+	enumerated_type : T_CURLYL comma_ident T_CURLYR .  (35)
+
+	.  reduce 35
+
+
+state 146
+	o_parameters : o_parameters T_SEMICOLON . T_IDENT  (21)
+
+	T_IDENT  shift 155
+	.  error
+
+
+state 147
+	formal_parameters : T_BRACKETL o_parameters T_BRACKETR .  (19)
+
+	.  reduce 19
+
+
+state 148
+	do_statement : T_DO compound_statement T_WHILE expression T_END T_DO .  (62)
+
+	.  reduce 62
+
+
+state 149
+	for_statement : T_FOR T_EACH T_IDENT T_IN T_IDENT T_DO . compound_statement T_END T_FOR  (63)
+
+	T_BEGIN  shift 34
+	.  error
+
+	compound_statement  goto 156
+
+
+state 150
+	if_statement : T_IF expression T_THEN compound_statement T_END T_IF .  (60)
+
+	.  reduce 60
+
+
+state 151
+	while_statement : T_WHILE expression T_DO compound_statement T_END T_WHILE .  (61)
+
+	.  reduce 61
+
+
+state 152
+	array_type : T_ARRAY T_IDENT T_SQUAREL range . T_SQUARER T_OF type  (39)
+
+	T_SQUARER  shift 157
+	.  error
+
+
+state 153
+	range : T_NUMBER T_TO T_NUMBER .  (40)
+
+	.  reduce 40
+
+
+state 154
+	comma_ident : comma_ident T_COMMA T_IDENT .  (37)
+
+	.  reduce 37
+
+
+state 155
+	o_parameters : o_parameters T_SEMICOLON T_IDENT .  (21)
+
+	.  reduce 21
+
+
+state 156
+	for_statement : T_FOR T_EACH T_IDENT T_IN T_IDENT T_DO compound_statement . T_END T_FOR  (63)
+
+	T_END  shift 158
+	.  error
+
+
+state 157
+	array_type : T_ARRAY T_IDENT T_SQUAREL range T_SQUARER . T_OF type  (39)
+
+	T_OF  shift 159
+	.  error
+
+
+state 158
+	for_statement : T_FOR T_EACH T_IDENT T_IN T_IDENT T_DO compound_statement T_END . T_FOR  (63)
+
+	T_FOR  shift 160
+	.  error
+
+
+state 159
+	array_type : T_ARRAY T_IDENT T_SQUAREL range T_SQUARER T_OF . type  (39)
+
+	T_ARRAY  shift 105
+	T_SQUAREL  shift 106
+	T_CURLYL  shift 107
+	T_IDENT  shift 108
+	.  error
+
+	type  goto 161
+	basic_type  goto 110
+	array_type  goto 111
+	enumerated_type  goto 112
+	range_type  goto 113
+
+
+state 160
+	for_statement : T_FOR T_EACH T_IDENT T_IN T_IDENT T_DO compound_statement T_END T_FOR .  (63)
+
+	.  reduce 63
+
+
+state 161
+	array_type : T_ARRAY T_IDENT T_SQUAREL range T_SQUARER T_OF type .  (39)
+
+	.  reduce 39
+
+
+40 terminals, 47 nonterminals
+77 grammar rules, 162 states
